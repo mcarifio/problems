@@ -1,12 +1,18 @@
 # Placeholder for project virutalenv
 
-Poetry respects this directory naming convention. Makes it easier for pycharm to find the right virtual environment.
+Poetry respects this directory naming convention. Makes it easier for pycharm to find the right virtual environment. You have to create the virtualenv first
+however.
 
 ```bash
-$p poetry install # creates a virtualenv in .venv (?)
-$p poetry run python -m venv .venv # create a virtualenv using poetry's python 
+$p pyenv local 3.7.0 # or pyenv global
+$p poetry run python -m venv .venv # populate a virtualenv using poetry's python 
 $p cat .venv/pyvenv.cfg
 $p poetry shell
 $p echo $VIRTUAL_ENV
-$p echo $(git rev-parse --show-toplevel)/.venv  ## should be the same value? 
+$p echo $(git rev-parse --show-toplevel)/.venv  ## should be the same value?
+$p poetry update
+$p poetry install
+$p poetry -vvv show ## should show you ${VIRTUAL_ENV}
 ```
+
+I might have this workflow wrong. It's a little confusing.
