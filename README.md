@@ -15,16 +15,16 @@ Install python on your local machine. I prefer `pyenv`, but you could use your p
 * Install python 3.7 using `pyenv`:
 
 ```bash
-
-$ id  ## not root, you are you                                                                                                                                                                                                               
+$p  p=''
+$p id  ## not root, you are you                                                                                                                                                                                                               
 uid=1000(mcarifio) gid=1000(mcarifio) groups=1000(mcarifio), ...
 
-$ pyenv --version  ## confirm pyenv works, you'll get a version, doesn't matter what
+$p pyenv --version  ## confirm pyenv works, you'll get a version, doesn't matter what
 pyenv 1.2.5-41-g6309aaf
 
-$ pyenv install 3.7.0  ## lotsa output
-$ pyenv global 3.7.0  ## set the global python, you can set a local one below
-$ python -V
+$p pyenv install 3.7.0  ## lotsa output
+$p pyenv global 3.7.0  ## set the global python, you can set a local one below
+$p python -V
 Python 3.7.0
 ```
 
@@ -32,13 +32,13 @@ Confirm that python is coming from where you expect. If `pyenv` or your package 
 you don't really need this. Good to know however and all three methods should yield the same answer.
 
 ```bash
-$ which python                                                                                                                                                                                                               
+$p which python                                                                                                                                                                                                               
 /home/mcarifio/.pyenv/versions/3.7.0/bin/python
 
-$ pyenv which python                                                                                                                                                                                                         
+$p pyenv which python                                                                                                                                                                                                         
 /home/mcarifio/.pyenv/versions/3.7.0/bin/python
 
-$ python -c 'import sys; print(sys.executable)'
+$p python -c 'import sys; print(sys.executable)'
 /home/mcarifio/.pyenv/versions/3.7.0/bin/python
 ```
 
@@ -48,35 +48,42 @@ TODO mike@carif.io: someday there will be a python3 snap. Prefer that when it ha
 First time for `problems`, get the sources, pin a pyenv version to the git root and install the project dependencies in a python virtualenv using `poetry`:
 
 ```bash
-$ git clone https://www.github.com/mcarifio/problems && cd problems  ## get the repo
+$p git clone https://www.github.com/mcarifio/problems && cd problems  ## get the repo
 ```
 
 Optionally, define a "directory local" python version, pinning it so it doesn't change out from under you.
 
 ```bash
-$ pyenv local 3.7.0
-$ pyenv local
+$p pyenv local 3.7.0
+$p pyenv local
 3.7.0
-$ python -V 
+$p python -V 
 ```
 
 Install python [poetry](https://poetry.eustace.io/docs/) into your python installation, then bootstrap a virtualenv
 with dependencies installed. 
 
 ```bash
-$ python -m pip -U pip  # update pip to the latest
-$ python -m pip install poetry  # install poetry into your working venv
+$p python -m pip -U pip  # update pip to the latest
+$p python -m pip install poetry  # install poetry into your working venv
 
-$ which poetry                                                                                                                                                                                                               
+$p which poetry                                                                                                                                                                                                               
 /home/mcarifio/.pyenv/versions/3.7.0/bin/poetry
 
-$ poetry --version                                                                                                                                                                                                           
+$p poetry --version                                                                                                                                                                                                           
 Poetry 0.12.11
 
-$ poetry check
+$p poetry check
 All set!
-$ poetry update  # update poetry.lock
-$ poetry install # build the virtualenv and populate with this module and all the dependencies
+
+$p poetry run python -m venv .venv # populate a virtualenv using poetry's python 
+$p cat .venv/pyvenv.cfg
+$p poetry shell
+$p echo $VIRTUAL_ENV
+$p echo $(git rev-parse --show-toplevel)/.venv  ## should be the same value?
+$p poetry update
+$p poetry install
+$p poetry -vvv show ## should show you ${VIRTUAL_ENV}
 ```
 
 Do a quick smoke test of the environment you just created:
@@ -103,7 +110,7 @@ htpasswd -b .config/project.py/build/resources/pypiserver/htpasswd.txt ${USER} p
 You can then run the local `pypiserver` directly or indirectly. Directly:
 TODO mike@carif.io: test and then fix this text
 ```bash
-$ pypi-server -v --overwrite -P .config/project.py/build/resources/pypiserver/htpasswd.txt -v --port=9090 project/build/resources/pypiserver/packages
+$p pypi-server -v --overwrite -P .config/project.py/build/resources/pypiserver/htpasswd.txt -v --port=9090 project/build/resources/pypiserver/packages
 2019-02-03 16:43:04,766|pypiserver.core|INFO|139854031225152|+++Pypiserver invoked with: Configuration:
              VERSION = 1.2.7
        authenticated = ['update']
@@ -182,12 +189,12 @@ poetry run pypiserver
 With a local server running, you can publish and then search for the result:
 
 ```bash
-$ poetry config repositories.xonshit http://localhost:9090/  # temporary, poetry bug?
+$p poetry config repositories.xonshit http://localhost:9090/  # temporary, poetry bug?
 
-$ poetry config repositories
+$p poetry config repositories
 {'xonshit': {'url': 'http://localhost:9090/'}}
 
-$ poetry publish  --repository=xonshit --build                                                                                                                                                                               
+$p poetry publish  --repository=xonshit --build                                                                                                                                                                               
 Building xonshit (0.1.1)
  - Building sdist
  - Built xonshit-0.1.1.tar.gz
@@ -199,7 +206,7 @@ Publishing xonshit (0.1.1) to xonshit
  - Uploading xonshit-0.1.1-py3-none-any.whl 100%
  - Uploading xonshit-0.1.1.tar.gz 100%
  
- $ pip search --index http://localhost:9090 xonshit                                                                                                                                                                           
+ $p pip search --index http://localhost:9090 xonshit                                                                                                                                                                           
 xonshit (0.1.1)  - 0.1.1
 ```
 
@@ -208,12 +215,12 @@ This is a useful way to confirm that your last git commit (or any commit for tha
 [venv](https://docs.python.org/3/library/venv.html) module:
 
 ```bash
-$ mkdir /tmp/venv                                                                                                                                                                                                            
-$ python -m venv /tmp/venv                                                                                                                                                                                                   
-$ pushd /tmp/venv  ## simplifies inspecting the installed module xonshit
-$ source bin/activiate  
+$p mkdir /tmp/venv                                                                                                                                                                                                            
+$p python -m venv /tmp/venv                                                                                                                                                                                                   
+$p pushd /tmp/venv  ## simplifies inspecting the installed module xonshit
+$p source bin/activiate  
 
-(venv) $ pip install -U pip  ## the latest pip groks pyproject.toml. very useful.                                                                                                                                                                                                                      
+(venv) $p pip install -U pip  ## the latest pip groks pyproject.toml. very useful.                                                                                                                                                                                                                      
 Collecting pip
   Using cached https://files.pythonhosted.org/packages/46/dc/7fd5df840efb3e56c8b4f768793a237ec4ee59891959d6a215d63f727023/pip-19.0.1-py2.py3-none-any.whl
 Installing collected packages: pip
@@ -222,7 +229,7 @@ Installing collected packages: pip
       Successfully uninstalled pip-10.0.1
 Successfully installed pip-19.0.1
 
-$ pip install git+ssh://git@github.com/mcarifio/xonshit.git                                                                                                                                                                               
+$p pip install git+ssh://git@github.com/mcarifio/xonshit.git                                                                                                                                                                               
 Collecting git+ssh://git@github.com/mcarifio/xonshit.git
   Cloning ssh://git@github.com/mcarifio/xonshit.git to /tmp/pip-req-build-2a2vgu6k
   Installing build dependencies ... done
@@ -307,7 +314,7 @@ Installing collected packages: six, fire, py, pluggy, more-itertools, atomicwrit
   Running setup.py install for cachecontrol ... done
 Successfully installed atomicwrites-1.3.0 attrs-18.2.0 cachecontrol-0.12.5 cachy-0.2.0 certifi-2018.11.29 chardet-3.0.4 cleo-0.6.8 fire-0.1.3 html5lib-1.0.1 hypothesis-4.5.0 idna-2.8 jsonschema-3.0.0b3 lockfile-0.12.2 more-itertools-5.0.0 msgpack-0.6.1 pastel-0.1.0 pkginfo-1.5.0.1 pluggy-0.8.1 poetry-0.12.11 prompt-toolkit-2.0.8 py-1.7.0 pylev-1.3.0 pyparsing-2.3.1 pyrsistent-0.14.9 pytest-4.2.0 requests-2.21.0 requests-toolbelt-0.8.0 shellingham-1.2.8 six-1.12.0 tomlkit-0.5.3 urllib3-1.24.1 wcwidth-0.1.7 webencodings-0.5.1 xonsh-0.8.9 xonshit-0.1.1
 
-$ python -m xonshit.runner testing                                                                                                                                                                    
+$p python -m xonshit.runner testing                                                                                                                                                                    
 =========================================================================================================================== test session starts ============================================================================================================================
 platform linux -- Python 3.7.0, pytest-4.2.0, py-1.7.0, pluggy-0.8.1 -- /tmp/venv/bin/python
 cachedir: .pytest_cache

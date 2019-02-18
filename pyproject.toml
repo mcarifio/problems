@@ -34,7 +34,9 @@ passlib = "^1.7"
 
 # poetry add --dev --optional xonsh
 # https://xon.sh/index.html
+pip = "^19.0"
 xonsh = {version = "^0.8.9",optional = true}
+# pew = "^1.1" # install virtualenv, breaks python venv conventions?
 
 
 
